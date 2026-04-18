@@ -26,15 +26,15 @@ class SearchController extends BaseApiController
         }
 
         $rules = [
-            'query' => 'required|min_length[1]|max_length[200]',
-            'type'  => 'permit_empty|in_list[movie,tv]',
-            'page'  => 'permit_empty|integer|greater_than[0]',
+            'q'    => 'required|min_length[1]|max_length[200]',
+            'type' => 'permit_empty|in_list[movie,tv]',
+            'page' => 'permit_empty|integer|greater_than[0]',
         ];
 
         $input = [
-            'query' => $this->request->getGet('query'),
-            'type'  => $this->request->getGet('type') ?? 'movie',
-            'page'  => $this->request->getGet('page') ?? 1,
+            'q'    => $this->request->getGet('q'),
+            'type' => $this->request->getGet('type') ?? 'movie',
+            'page' => $this->request->getGet('page') ?? 1,
         ];
 
         if (! $this->validateData($input, $rules)) {
@@ -43,7 +43,7 @@ class SearchController extends BaseApiController
 
         try {
             $results = $this->tmdb->search(
-                $input['query'],
+                $input['q'],
                 $input['type'],
                 (int) $input['page']
             );
@@ -55,8 +55,9 @@ class SearchController extends BaseApiController
         return $this->success($results, 'Resultados de búsqueda.');
     }
 
-    public function show(int $tmdbId): ResponseInterface
+    public function show($id = null): ResponseInterface
     {
+        $tmdbId = (int) $id;
         $type = $this->request->getGet('type') ?? 'movie';
 
         if (! in_array($type, ['movie', 'tv'], true)) {

@@ -56,8 +56,9 @@ class ListController extends BaseApiController
         return $this->success($list, 'Lista creada.', 201);
     }
 
-    public function show(int $listId): ResponseInterface
+    public function show($id = null): ResponseInterface
     {
+        $listId = (int) $id;
         if (! $this->listModel->belongsToUser($listId, $this->currentUserId())) {
             return $this->error('Lista no encontrada.', 404);
         }
@@ -66,8 +67,9 @@ class ListController extends BaseApiController
         return $this->success($list, 'Detalle de la lista.');
     }
 
-    public function update(int $listId): ResponseInterface
+    public function update($id = null): ResponseInterface
     {
+        $listId = (int) $id;
         if (! $this->listModel->belongsToUser($listId, $this->currentUserId())) {
             return $this->error('Lista no encontrada.', 404);
         }
@@ -102,8 +104,9 @@ class ListController extends BaseApiController
         return $this->success($this->listModel->find($listId), 'Lista actualizada.');
     }
 
-    public function delete(int $listId): ResponseInterface
+    public function delete($id = null): ResponseInterface
     {
+        $listId = (int) $id;
         if (! $this->listModel->belongsToUser($listId, $this->currentUserId())) {
             return $this->error('Lista no encontrada.', 404);
         }

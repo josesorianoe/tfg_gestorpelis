@@ -25,7 +25,7 @@ class UserController extends BaseApiController
         return $this->success($this->userModel->safeFields($user), 'Perfil del usuario.');
     }
 
-    public function update(): ResponseInterface
+    public function update($id = null): ResponseInterface
     {
         $userId = $this->currentUserId();
 

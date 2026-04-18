@@ -28,7 +28,6 @@ class TMDBService
         }
 
         $this->client = \Config\Services::curlrequest([
-            'baseURI' => $this->baseUrl,
             'timeout' => 10,
         ]);
     }
@@ -105,7 +104,7 @@ class TMDBService
         $params['api_key'] = $this->apiKey;
 
         try {
-            $response = $this->client->get($endpoint, ['query' => $params]);
+            $response = $this->client->get($this->baseUrl . $endpoint, ['query' => $params]);
         } catch (\Throwable $e) {
             throw new RuntimeException('TMDB API request failed: ' . $e->getMessage(), 0, $e);
         }
