@@ -1,0 +1,44 @@
+{
+    "name": "gestor-pelis/backend",
+    "description": "API REST para gestión de películas y series - TFG",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "codeigniter4/framework": "^4.5",
+        "firebase/php-jwt": "^6.10"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "phpunit/phpunit": "^11.0",
+        "codeigniter4/devkit": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Config\\": "app/Config/"
+        },
+        "exclude-from-classmap": [
+            "**/Database/Migrations/**"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "CodeIgniter\\ComposerScripts::postUpdate"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "codeigniter4/devkit": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

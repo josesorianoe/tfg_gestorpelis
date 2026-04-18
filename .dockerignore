@@ -1,0 +1,13 @@
+.git
+.gitignore
+.claude
+vendor
+node_modules
+writable/logs/*
+writable/cache/*
+writable/session/*
+writable/uploads/*
+*.log
+.env
+docker-compose.override.yml
+README.md

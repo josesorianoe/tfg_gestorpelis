@@ -1,0 +1,35 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies
+vendor/
+node_modules/
+
+# CodeIgniter writable
+writable/logs/*
+writable/cache/*
+writable/session/*
+writable/uploads/*
+!writable/logs/.gitkeep
+!writable/cache/.gitkeep
+!writable/session/.gitkeep
+!writable/uploads/.gitkeep
+
+# Docker overrides
+docker-compose.override.yml
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# PHP
+*.log

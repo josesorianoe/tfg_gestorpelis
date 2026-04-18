@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php
+
+/*
+ * CodeIgniter Spark - CLI entry point
+ */
+
+// Path to the front controller
+define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR);
+
+$pathsConfig = FCPATH . '../app/Config/Paths.php';
+
+if (! is_file($pathsConfig)) {
+    echo 'The application folder path does not appear to be set correctly. Please open the following file and correct this: ' . $pathsConfig;
+    exit(3);
+}
+
+require $pathsConfig;
+$paths = new Config\Paths();
+
+require rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'bootstrap.php';
+
+require_once SYSTEMPATH . 'Config/DotEnv.php';
+(new CodeIgniter\Config\DotEnv(ROOTPATH))->load();
+
+if (! defined('ENVIRONMENT')) {
+    define('ENVIRONMENT', env('CI_ENVIRONMENT', 'production'));
+}
+
+$app = Config\Services::codeigniter();
+$app->initialize();
+$app->setContext('php-cli');
+$app->run();

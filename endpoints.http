@@ -1,0 +1,227 @@
+### Gestor Películas API - Colección de endpoints
+### Compatible con VS Code REST Client extension y JetBrains HTTP Client
+
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+# Primero haz login y copia el access_token aquí:
+@token = TU_ACCESS_TOKEN_AQUI
+@refreshToken = TU_REFRESH_TOKEN_AQUI
+
+# ======================================================================
+# HEALTH CHECK
+# ======================================================================
+
+### API Root
+GET {{baseUrl}}/
+
+### Health check
+GET {{baseUrl}}/health
+
+# ======================================================================
+# AUTH
+# ======================================================================
+
+### Registro
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "Juan García",
+  "email": "juan@example.com",
+  "password": "mipassword123"
+}
+
+###
+
+### Login (usuario demo del seeder)
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "demo@example.com",
+  "password": "password123"
+}
+
+###
+
+### Refresh token
+POST {{baseUrl}}/api/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refresh_token": "{{refreshToken}}"
+}
+
+###
+
+### Logout
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "refresh_token": "{{refreshToken}}"
+}
+
+# ======================================================================
+# BÚSQUEDA
+# ======================================================================
+
+### Buscar película
+GET {{baseUrl}}/api/search?query=inception&type=movie&page=1
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar serie
+GET {{baseUrl}}/api/search?query=breaking+bad&type=tv
+Authorization: Bearer {{token}}
+
+###
+
+### Detalle de película (Inception - TMDB ID: 27205)
+GET {{baseUrl}}/api/media/27205?type=movie
+Authorization: Bearer {{token}}
+
+###
+
+### Detalle de serie (Breaking Bad - TMDB ID: 1396)
+GET {{baseUrl}}/api/media/1396?type=tv
+Authorization: Bearer {{token}}
+
+# ======================================================================
+# CATÁLOGO LOCAL
+# ======================================================================
+
+### Catálogo paginado
+GET {{baseUrl}}/api/catalog?page=1&per_page=20
+Authorization: Bearer {{token}}
+
+###
+
+### Títulos populares
+GET {{baseUrl}}/api/catalog/popular
+Authorization: Bearer {{token}}
+
+# ======================================================================
+# LISTAS DE USUARIO
+# ======================================================================
+
+### Ver mis listas
+GET {{baseUrl}}/api/lists
+Authorization: Bearer {{token}}
+
+###
+
+### Crear lista
+POST {{baseUrl}}/api/lists
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Sci-Fi favoritas",
+  "description": "Las mejores películas de ciencia ficción",
+  "is_public": true
+}
+
+###
+
+### Ver detalle de lista (con items)
+GET {{baseUrl}}/api/lists/1
+Authorization: Bearer {{token}}
+
+###
+
+### Actualizar lista
+PUT {{baseUrl}}/api/lists/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Sci-Fi - Top",
+  "is_public": false
+}
+
+###
+
+### Eliminar lista
+DELETE {{baseUrl}}/api/lists/1
+Authorization: Bearer {{token}}
+
+# ======================================================================
+# ITEMS DE LISTA
+# ======================================================================
+
+### Añadir película a lista (Inception)
+POST {{baseUrl}}/api/lists/1/items
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "tmdb_id": 27205,
+  "media_type": "movie"
+}
+
+###
+
+### Añadir serie a lista (Breaking Bad)
+POST {{baseUrl}}/api/lists/1/items
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "tmdb_id": 1396,
+  "media_type": "tv"
+}
+
+###
+
+### Actualizar item (marcar visto + nota + puntuación)
+PUT {{baseUrl}}/api/lists/1/items/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "watched": true,
+  "user_rating": 9.5,
+  "user_note": "Obra maestra absoluta. El final es perfecto."
+}
+
+###
+
+### Quitar item de lista
+DELETE {{baseUrl}}/api/lists/1/items/1
+Authorization: Bearer {{token}}
+
+# ======================================================================
+# PERFIL DE USUARIO
+# ======================================================================
+
+### Ver mi perfil
+GET {{baseUrl}}/api/user/me
+Authorization: Bearer {{token}}
+
+###
+
+### Actualizar perfil
+PUT {{baseUrl}}/api/user/me
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Juan García López",
+  "avatar_url": "https://example.com/avatar.jpg"
+}
+
+###
+
+### Cambiar contraseña
+PUT {{baseUrl}}/api/user/password
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "current_password": "password123",
+  "new_password": "nuevapassword456"
+}
