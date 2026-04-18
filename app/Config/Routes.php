@@ -12,8 +12,8 @@ $routes->set404Override();
 $routes->setAutoRoute(false);
 
 // Health check (público)
-$routes->get('/', 'App\Controllers\HomeController::index');
-$routes->get('health', 'App\Controllers\HomeController::health');
+$routes->get('/', 'HomeController::index');
+$routes->get('health', 'HomeController::health');
 
 // -----------------------------------------------------------------------
 // API routes

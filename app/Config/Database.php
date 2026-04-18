@@ -29,11 +29,6 @@ class Database extends Config
         'failover'     => [],
         'port'         => 5432,
         'numberNative' => false,
-        'dateFormat'   => [
-            'date'     => 'Y-m-d',
-            'datetime' => 'Y-m-d H:i:s',
-            'time'     => 'H:i:s',
-        ],
     ];
 
     public array $tests = [
@@ -55,29 +50,4 @@ class Database extends Config
         'failover' => [],
         'port'     => 3306,
     ];
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        // Override from environment variables
-        if ($hostname = env('database.default.hostname')) {
-            $this->default['hostname'] = $hostname;
-        }
-        if ($database = env('database.default.database')) {
-            $this->default['database'] = $database;
-        }
-        if ($username = env('database.default.username')) {
-            $this->default['username'] = $username;
-        }
-        if ($password = env('database.default.password')) {
-            $this->default['password'] = $password;
-        }
-        if ($port = env('database.default.port')) {
-            $this->default['port'] = (int) $port;
-        }
-        if ($driver = env('database.default.DBDriver')) {
-            $this->default['DBDriver'] = $driver;
-        }
-    }
 }

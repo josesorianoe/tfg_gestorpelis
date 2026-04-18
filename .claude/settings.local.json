@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git -C /c/Users/Pc/Desktop/gestor_pelis_tfg status)"
+      "Bash(git -C /c/Users/Pc/Desktop/gestor_pelis_tfg status)",
+      "Bash(docker compose *)"
     ]
   }
 }

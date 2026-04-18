@@ -1,14 +1,18 @@
 <?php
 
 /*
+ * The environment testing is reserved for PHPUnit testing. It has special
+ * conditions built into the framework at various places to assist with that.
+ * You can’t use it for your development.
+ */
+
+/*
  |--------------------------------------------------------------------------
  | ERROR DISPLAY
  |--------------------------------------------------------------------------
  | In development, we want to show as many errors as possible to help
  | make sure they don't make it to production. And save us hours of
  | painful debugging.
- |
- | If you set 'display_errors' to '1', CI4's detailed error report will show.
  */
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -28,7 +32,7 @@ defined('SHOW_DEBUG_BACKTRACE') || define('SHOW_DEBUG_BACKTRACE', true);
  | DEBUG MODE
  |--------------------------------------------------------------------------
  | Debug mode is an experimental flag that can allow changes throughout
- | the system. This will control whether Kint is loaded, and a few other
- | items. It can always be used within your own application too.
+ | the system. It's not widely used currently, and may not survive
+ | release of the framework.
  */
 defined('CI_DEBUG') || define('CI_DEBUG', true);

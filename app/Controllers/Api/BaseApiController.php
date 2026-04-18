@@ -7,7 +7,7 @@ use CodeIgniter\RESTful\ResourceController;
 
 abstract class BaseApiController extends ResourceController
 {
-    protected string $format = 'json';
+    protected $format = 'json';
 
     protected function success(mixed $data = null, string $message = 'OK', int $code = 200): ResponseInterface
     {
