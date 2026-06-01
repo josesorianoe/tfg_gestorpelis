@@ -32,9 +32,14 @@ class UserListModel extends Model
 
     public function getByUserId(int $userId): array
     {
-        return $this->where('user_id', $userId)
-                    ->orderBy('created_at', 'DESC')
-                    ->findAll();
+        return $this->db->table('user_lists ul')
+            ->select('ul.id, ul.user_id, ul.name, ul.description, ul.is_public, ul.created_at, ul.updated_at, COUNT(li.id) as item_count')
+            ->join('list_items li', 'li.list_id = ul.id', 'left')
+            ->where('ul.user_id', $userId)
+            ->groupBy('ul.id, ul.user_id, ul.name, ul.description, ul.is_public, ul.created_at, ul.updated_at')
+            ->orderBy('ul.created_at', 'DESC')
+            ->get()
+            ->getResultArray();
     }
 
     public function getWithItems(int $listId): ?array

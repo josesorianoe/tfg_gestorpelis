@@ -36,6 +36,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
     $routes->group('catalog', ['filter' => 'jwt'], static function ($routes) {
         $routes->get('/',        'CatalogController::index');
         $routes->get('popular',  'CatalogController::popular');
+        $routes->get('discover', 'CatalogController::discover');
     });
 
     // User lists (protegido)
@@ -57,5 +58,6 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
         $routes->get('me',       'UserController::me');
         $routes->put('me',       'UserController::update');
         $routes->put('password', 'UserController::changePassword');
+        $routes->get('media',    'UserController::media');
     });
 });

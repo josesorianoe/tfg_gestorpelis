@@ -4,6 +4,7 @@ namespace App\Controllers\Api;
 
 use App\Models\MediaItemModel;
 use App\Services\CacheService;
+use App\Services\TMDBService;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class CatalogController extends BaseApiController
@@ -34,6 +35,25 @@ class CatalogController extends BaseApiController
                 'pages'    => (int) ceil($total / $perPage),
             ],
         ], 'Catálogo local.');
+    }
+
+    public function discover(): ResponseInterface
+    {
+        $type = $this->request->getGet('type') ?? 'movie';
+        $page = max(1, (int) ($this->request->getGet('page') ?? 1));
+
+        if (! in_array($type, ['movie', 'tv'], true)) {
+            return $this->error('El parámetro type debe ser "movie" o "tv".', 400);
+        }
+
+        try {
+            $tmdb    = new TMDBService();
+            $results = $tmdb->getPopular($type, $page);
+            return $this->success($results, 'Títulos populares de TMDB.');
+        } catch (\RuntimeException $e) {
+            log_message('error', 'TMDB discover error: ' . $e->getMessage());
+            return $this->error('Error al obtener títulos populares.', 502);
+        }
     }
 
     public function popular(): ResponseInterface

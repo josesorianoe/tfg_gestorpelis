@@ -30,11 +30,46 @@ class ListItemModel extends Model
 
     public function getByListId(int $listId): array
     {
-        return $this->db->table('list_items li')
-            ->select('li.*, mi.tmdb_id, mi.media_type, mi.title, mi.overview, mi.poster_path, mi.backdrop_path, mi.release_date, mi.vote_average, mi.genres')
+        $rows = $this->db->table('list_items li')
+            ->select('li.id, li.list_id, li.media_item_id, li.user_note, li.user_rating, li.watched, li.added_at, mi.id as mi_id, mi.tmdb_id, mi.media_type, mi.title, mi.overview, mi.poster_path, mi.backdrop_path, mi.release_date, mi.vote_average, mi.genres')
             ->join('media_items mi', 'mi.id = li.media_item_id')
             ->where('li.list_id', $listId)
             ->orderBy('li.added_at', 'DESC')
+            ->get()
+            ->getResultArray();
+
+        return array_map(static fn($row) => [
+            'id'            => $row['id'],
+            'list_id'       => $row['list_id'],
+            'media_item_id' => $row['media_item_id'],
+            'user_note'     => $row['user_note'],
+            'user_rating'   => $row['user_rating'],
+            'watched'       => $row['watched'],
+            'added_at'      => $row['added_at'],
+            'media_item'    => [
+                'id'            => $row['mi_id'],
+                'tmdb_id'       => $row['tmdb_id'],
+                'media_type'    => $row['media_type'],
+                'title'         => $row['title'],
+                'overview'      => $row['overview'],
+                'poster_path'   => $row['poster_path'],
+                'backdrop_path' => $row['backdrop_path'],
+                'release_date'  => $row['release_date'],
+                'vote_average'  => $row['vote_average'],
+                'genres'        => $row['genres'],
+            ],
+        ], $rows);
+    }
+
+    public function getUniqueMediaByUserId(int $userId): array
+    {
+        return $this->db->table('list_items li')
+            ->select('mi.id, mi.tmdb_id, mi.media_type, mi.title, mi.poster_path, mi.backdrop_path, mi.release_date, mi.vote_average')
+            ->join('media_items mi', 'mi.id = li.media_item_id')
+            ->join('user_lists ul', 'ul.id = li.list_id')
+            ->where('ul.user_id', $userId)
+            ->groupBy('mi.id, mi.tmdb_id, mi.media_type, mi.title, mi.poster_path, mi.backdrop_path, mi.release_date, mi.vote_average')
+            ->orderBy('MAX(li.added_at)', 'DESC')
             ->get()
             ->getResultArray();
     }

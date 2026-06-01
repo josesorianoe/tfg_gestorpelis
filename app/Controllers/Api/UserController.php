@@ -2,16 +2,25 @@
 
 namespace App\Controllers\Api;
 
+use App\Models\ListItemModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class UserController extends BaseApiController
 {
     private UserModel $userModel;
+    private ListItemModel $listItemModel;
 
     public function __construct()
     {
-        $this->userModel = new UserModel();
+        $this->userModel     = new UserModel();
+        $this->listItemModel = new ListItemModel();
+    }
+
+    public function media(): ResponseInterface
+    {
+        $items = $this->listItemModel->getUniqueMediaByUserId($this->currentUserId());
+        return $this->success($items, 'Biblioteca del usuario.');
     }
 
     public function me(): ResponseInterface
