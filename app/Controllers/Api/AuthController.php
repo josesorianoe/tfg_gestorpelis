@@ -32,34 +32,42 @@ class AuthController extends BaseApiController
             return $this->validationError($this->validator->getErrors());
         }
 
+        $db        = \Config\Database::connect();
+        $listModel = new UserListModel();
+        $userId    = null;
+
+        $db->transStart();
+
         $userId = $this->userModel->insert([
             'name'     => trim($input['name']),
             'email'    => strtolower(trim($input['email'])),
             'password' => password_hash($input['password'], PASSWORD_BCRYPT),
         ], true);
 
-        if (! $userId) {
-            return $this->error('No se pudo crear el usuario.', 500);
+        if ($userId) {
+            $listModel->insert([
+                'user_id'     => $userId,
+                'name'        => 'Pendientes por ver',
+                'description' => '',
+                'is_public'   => false,
+                'is_default'  => true,
+            ]);
+
+            $listModel->insert([
+                'user_id'     => $userId,
+                'name'        => 'Series que estoy viendo',
+                'description' => '',
+                'is_public'   => false,
+                'is_default'  => true,
+                'media_type'  => 'tv',
+            ]);
         }
 
-        $listModel = new UserListModel();
+        $db->transComplete();
 
-        $listModel->insert([
-            'user_id'     => $userId,
-            'name'        => 'Pendientes por ver',
-            'description' => '',
-            'is_public'   => false,
-            'is_default'  => true,
-        ]);
-
-        $listModel->insert([
-            'user_id'     => $userId,
-            'name'        => 'Series que estoy viendo',
-            'description' => '',
-            'is_public'   => false,
-            'is_default'  => true,
-            'media_type'  => 'tv',
-        ]);
+        if (! $db->transStatus() || ! $userId) {
+            return $this->error('No se pudo crear el usuario.', 500);
+        }
 
         $user         = $this->userModel->find($userId);
         $accessToken  = $this->jwtService->generateAccessToken($userId, $user['email']);

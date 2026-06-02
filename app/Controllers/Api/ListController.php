@@ -75,7 +75,7 @@ class ListController extends BaseApiController
         }
 
         $list = $this->listModel->find($listId);
-        if ($list && ($list['is_default'] === true || $list['is_default'] === 't' || $list['is_default'] === 1)) {
+        if ($list && ($this->isTrue($list['is_default']))) {
             return $this->error('No se puede editar la lista por defecto.', 403);
         }
 
@@ -117,7 +117,7 @@ class ListController extends BaseApiController
         }
 
         $list = $this->listModel->find($listId);
-        if ($list && ($list['is_default'] === true || $list['is_default'] === 't' || $list['is_default'] === 1)) {
+        if ($list && ($this->isTrue($list['is_default']))) {
             return $this->error('No se puede eliminar la lista por defecto.', 403);
         }
 

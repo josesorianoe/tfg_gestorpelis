@@ -38,7 +38,7 @@ class UserListModel extends Model
             ->select('ul.id, ul.user_id, ul.name, ul.description, ul.is_public, ul.is_default, ul.media_type, ul.created_at, ul.updated_at, COUNT(li.id) as item_count')
             ->join('list_items li', 'li.list_id = ul.id', 'left')
             ->where('ul.user_id', $userId)
-            ->groupBy('ul.id, ul.user_id, ul.name, ul.description, ul.is_public, ul.is_default, ul.created_at, ul.updated_at')
+            ->groupBy('ul.id, ul.user_id, ul.name, ul.description, ul.is_public, ul.is_default, ul.media_type, ul.created_at, ul.updated_at')
             ->orderBy('ul.created_at', 'DESC')
             ->get()
             ->getResultArray();

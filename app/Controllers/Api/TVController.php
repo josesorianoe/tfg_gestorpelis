@@ -46,8 +46,11 @@ class TVController extends BaseApiController
             return $this->error('No se pudo obtener la información de la serie.', 502);
         }
 
-        // Use episode_count from the detail summary (avoids N extra TMDB API calls per season).
-        // Insert row by row using the model so CI4's escaping/binding is reliable.
+        // Pre-fetch all already-watched episodes in one query, then batch-insert only the new ones.
+        $watched = $this->episodeModel->getWatchedKeys($userId, $seriesId);
+        $batch   = [];
+        $now     = date('Y-m-d H:i:s');
+
         foreach ($seasons as $season) {
             $seasonNumber = (int) ($season['season_number'] ?? 0);
             $episodeCount = (int) ($season['episode_count']  ?? 0);
@@ -55,17 +58,20 @@ class TVController extends BaseApiController
             if ($seasonNumber === 0 || $episodeCount === 0) continue;
 
             for ($ep = 1; $ep <= $episodeCount; $ep++) {
-                if ($this->episodeModel->findEntry($userId, $seriesId, $seasonNumber, $ep)) {
-                    continue;
+                if (! isset($watched["{$seasonNumber}_{$ep}"])) {
+                    $batch[] = [
+                        'user_id'        => $userId,
+                        'tmdb_series_id' => $seriesId,
+                        'season_number'  => $seasonNumber,
+                        'episode_number' => $ep,
+                        'watched_at'     => $now,
+                    ];
                 }
-                $this->episodeModel->insert([
-                    'user_id'        => $userId,
-                    'tmdb_series_id' => $seriesId,
-                    'season_number'  => $seasonNumber,
-                    'episode_number' => $ep,
-                    'watched_at'     => date('Y-m-d H:i:s'),
-                ]);
             }
+        }
+
+        if (! empty($batch)) {
+            $this->episodeModel->insertBatch($batch);
         }
 
         return $this->success(null, 'Todos los episodios marcados como vistos.');

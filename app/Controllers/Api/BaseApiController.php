@@ -40,4 +40,9 @@ abstract class BaseApiController extends ResourceController
     {
         return (int) $this->request->jwtPayload->sub;
     }
+
+    protected function isTrue(mixed $value): bool
+    {
+        return $value === true || $value === 't' || $value === 1;
+    }
 }

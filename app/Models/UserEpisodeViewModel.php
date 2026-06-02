@@ -30,6 +30,20 @@ class UserEpisodeViewModel extends Model
                     ->findAll();
     }
 
+    public function getWatchedKeys(int $userId, int $tmdbSeriesId): array
+    {
+        $rows = $this->select('season_number, episode_number')
+                     ->where('user_id', $userId)
+                     ->where('tmdb_series_id', $tmdbSeriesId)
+                     ->findAll();
+
+        $keys = [];
+        foreach ($rows as $r) {
+            $keys[(int) $r['season_number'] . '_' . (int) $r['episode_number']] = true;
+        }
+        return $keys;
+    }
+
     public function findEntry(int $userId, int $tmdbSeriesId, int $seasonNumber, int $episodeNumber): ?array
     {
         return $this->where('user_id', $userId)
