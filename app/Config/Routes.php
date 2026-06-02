@@ -64,6 +64,13 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
         $routes->post('(:num)/progress',      'TVController::toggleEpisode/$1');
     });
 
+    // Watch history (protegido)
+    $routes->group('history', ['filter' => 'jwt'], static function ($routes) {
+        $routes->get('/',          'HistoryController::index');
+        $routes->post('/',         'HistoryController::store');
+        $routes->delete('(:num)',  'HistoryController::destroy/$1');
+    });
+
     // User profile (protegido)
     $routes->group('user', ['filter' => 'jwt'], static function ($routes) {
         $routes->get('me',           'UserController::me');
