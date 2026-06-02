@@ -149,6 +149,15 @@ class ListController extends BaseApiController
         $tmdbId    = (int) $input['tmdb_id'];
         $mediaType = $input['media_type'];
 
+        // Enforce list media_type restriction
+        $list = $this->listModel->find($listId);
+        if ($list && ! empty($list['media_type']) && $list['media_type'] !== $mediaType) {
+            return $this->error(
+                'Esta lista solo acepta ' . ($list['media_type'] === 'tv' ? 'series' : 'películas') . '.',
+                422
+            );
+        }
+
         // Ensure media_item exists locally (fetch from TMDB if not)
         $mediaItem = $this->mediaModel->findByTmdbId($tmdbId, $mediaType);
 

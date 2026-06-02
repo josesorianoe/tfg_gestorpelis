@@ -19,6 +19,7 @@ class UserListModel extends Model
         'description',
         'is_public',
         'is_default',
+        'media_type',
     ];
 
     protected $useTimestamps = true;
@@ -34,7 +35,7 @@ class UserListModel extends Model
     public function getByUserId(int $userId): array
     {
         return $this->db->table('user_lists ul')
-            ->select('ul.id, ul.user_id, ul.name, ul.description, ul.is_public, ul.is_default, ul.created_at, ul.updated_at, COUNT(li.id) as item_count')
+            ->select('ul.id, ul.user_id, ul.name, ul.description, ul.is_public, ul.is_default, ul.media_type, ul.created_at, ul.updated_at, COUNT(li.id) as item_count')
             ->join('list_items li', 'li.list_id = ul.id', 'left')
             ->where('ul.user_id', $userId)
             ->groupBy('ul.id, ul.user_id, ul.name, ul.description, ul.is_public, ul.is_default, ul.created_at, ul.updated_at')

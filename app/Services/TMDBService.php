@@ -117,6 +117,20 @@ class TMDBService
         return $response;
     }
 
+    public function getSeason(int $tvId, int $seasonNumber): array
+    {
+        $cacheKey = $this->cache->buildKey('season', (string) $tvId, (string) $seasonNumber);
+        $endpoint = "/tv/{$tvId}/season/{$seasonNumber}";
+
+        if ($cached = $this->cache->get($cacheKey)) {
+            return $cached;
+        }
+
+        $response = $this->get($endpoint, ['language' => 'es-ES']);
+        $this->cache->set($cacheKey, $endpoint, $response, $this->cacheTtl);
+        return $response;
+    }
+
     private function get(string $endpoint, array $params = []): array
     {
         $params['api_key'] = $this->apiKey;

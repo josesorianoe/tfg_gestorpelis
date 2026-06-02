@@ -42,12 +42,23 @@ class AuthController extends BaseApiController
             return $this->error('No se pudo crear el usuario.', 500);
         }
 
-        (new UserListModel())->insert([
-            'user_id'    => $userId,
-            'name'       => 'Pendientes',
+        $listModel = new UserListModel();
+
+        $listModel->insert([
+            'user_id'     => $userId,
+            'name'        => 'Pendientes por ver',
             'description' => '',
-            'is_public'  => false,
-            'is_default' => true,
+            'is_public'   => false,
+            'is_default'  => true,
+        ]);
+
+        $listModel->insert([
+            'user_id'     => $userId,
+            'name'        => 'Series que estoy viendo',
+            'description' => '',
+            'is_public'   => false,
+            'is_default'  => true,
+            'media_type'  => 'tv',
         ]);
 
         $user         = $this->userModel->find($userId);

@@ -42,11 +42,11 @@ class UserController extends BaseApiController
         $currentListName = null;
         $currentListId   = null;
         foreach ($items as $item) {
-            $isDefault = $item['is_default'];
-            if (! ($isDefault === true || $isDefault === 't' || $isDefault === 1)) {
-                $inNonDefault    = true;
-                $currentListName = $item['list_name'] ?? null;
-                $currentListId   = (int) $item['list_id'];
+            $isDefault = ($item['is_default'] === true || $item['is_default'] === 't' || $item['is_default'] === 1);
+            $currentListName = $item['list_name'] ?? null;
+            $currentListId   = (int) $item['list_id'];
+            if (! $isDefault) {
+                $inNonDefault = true;
             }
         }
 

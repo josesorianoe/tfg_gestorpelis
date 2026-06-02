@@ -56,6 +56,14 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
         $routes->delete('(:num)/items/(:num)',      'ListController::removeItem/$1/$2');
     });
 
+    // TV seasons and episode progress (protegido)
+    $routes->group('tv', ['filter' => 'jwt'], static function ($routes) {
+        $routes->get('(:num)/season/(:num)',  'TVController::getSeason/$1/$2');
+        $routes->get('(:num)/progress',       'TVController::getProgress/$1');
+        $routes->post('(:num)/progress/all',  'TVController::markAllWatched/$1');
+        $routes->post('(:num)/progress',      'TVController::toggleEpisode/$1');
+    });
+
     // User profile (protegido)
     $routes->group('user', ['filter' => 'jwt'], static function ($routes) {
         $routes->get('me',           'UserController::me');
