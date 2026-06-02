@@ -27,7 +27,7 @@ class SearchController extends BaseApiController
 
         $rules = [
             'q'    => 'required|min_length[1]|max_length[200]',
-            'type' => 'permit_empty|in_list[movie,tv]',
+            'type' => 'permit_empty|in_list[movie,tv,person]',
             'page' => 'permit_empty|integer|greater_than[0]',
         ];
 
