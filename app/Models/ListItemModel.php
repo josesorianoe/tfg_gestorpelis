@@ -64,12 +64,24 @@ class ListItemModel extends Model
     public function getUniqueMediaByUserId(int $userId): array
     {
         return $this->db->table('list_items li')
-            ->select('mi.id, mi.tmdb_id, mi.media_type, mi.title, mi.poster_path, mi.backdrop_path, mi.release_date, mi.vote_average')
+            ->select('mi.id, mi.tmdb_id, mi.media_type, mi.title, mi.poster_path, mi.backdrop_path, mi.release_date, mi.vote_average, MAX(li.user_rating) as user_rating')
             ->join('media_items mi', 'mi.id = li.media_item_id')
             ->join('user_lists ul', 'ul.id = li.list_id')
             ->where('ul.user_id', $userId)
             ->groupBy('mi.id, mi.tmdb_id, mi.media_type, mi.title, mi.poster_path, mi.backdrop_path, mi.release_date, mi.vote_average')
             ->orderBy('MAX(li.added_at)', 'DESC')
+            ->get()
+            ->getResultArray();
+    }
+
+    public function getByUserAndMediaItem(int $userId, int $mediaItemId): array
+    {
+        return $this->db->table('list_items li')
+            ->select('li.*')
+            ->join('user_lists ul', 'ul.id = li.list_id')
+            ->where('ul.user_id', $userId)
+            ->where('li.media_item_id', $mediaItemId)
+            ->orderBy('li.added_at', 'DESC')
             ->get()
             ->getResultArray();
     }

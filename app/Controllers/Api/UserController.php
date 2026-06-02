@@ -3,6 +3,7 @@
 namespace App\Controllers\Api;
 
 use App\Models\ListItemModel;
+use App\Models\MediaItemModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -10,17 +11,78 @@ class UserController extends BaseApiController
 {
     private UserModel $userModel;
     private ListItemModel $listItemModel;
+    private MediaItemModel $mediaModel;
 
     public function __construct()
     {
         $this->userModel     = new UserModel();
         $this->listItemModel = new ListItemModel();
+        $this->mediaModel    = new MediaItemModel();
     }
 
     public function media(): ResponseInterface
     {
         $items = $this->listItemModel->getUniqueMediaByUserId($this->currentUserId());
         return $this->success($items, 'Biblioteca del usuario.');
+    }
+
+    public function mediaStatus(int $tmdbId): ResponseInterface
+    {
+        $type      = $this->request->getGet('type') ?? 'movie';
+        $userId    = $this->currentUserId();
+        $mediaItem = $this->mediaModel->findByTmdbId($tmdbId, $type);
+
+        if (! $mediaItem) {
+            return $this->success(['in_list' => false, 'user_rating' => null, 'user_note' => null], 'Estado del título.');
+        }
+
+        $items = $this->listItemModel->getByUserAndMediaItem($userId, (int) $mediaItem['id']);
+
+        return $this->success([
+            'in_list'     => ! empty($items),
+            'user_rating' => $items[0]['user_rating'] ?? null,
+            'user_note'   => $items[0]['user_note']   ?? null,
+        ], 'Estado del título.');
+    }
+
+    public function updateMediaReview(int $tmdbId): ResponseInterface
+    {
+        $userId = $this->currentUserId();
+        $input  = $this->request->getJSON(true) ?? [];
+        $type   = $input['type'] ?? 'movie';
+
+        $rules = [
+            'user_rating' => 'permit_empty|decimal|greater_than_equal_to[0]|less_than_equal_to[10]',
+            'user_note'   => 'permit_empty|max_length[1000]',
+        ];
+
+        if (! $this->validateData($input, $rules)) {
+            return $this->validationError($this->validator->getErrors());
+        }
+
+        $mediaItem = $this->mediaModel->findByTmdbId($tmdbId, $type);
+        if (! $mediaItem) {
+            return $this->error('Título no encontrado.', 404);
+        }
+
+        $items = $this->listItemModel->getByUserAndMediaItem($userId, (int) $mediaItem['id']);
+        if (empty($items)) {
+            return $this->error('Este título no está en ninguna lista.', 403);
+        }
+
+        $updateData = [];
+        if (array_key_exists('user_rating', $input)) {
+            $updateData['user_rating'] = $input['user_rating'] !== '' ? $input['user_rating'] : null;
+        }
+        if (array_key_exists('user_note', $input)) {
+            $updateData['user_note'] = trim($input['user_note'] ?? '');
+        }
+
+        foreach ($items as $item) {
+            $this->listItemModel->update((int) $item['id'], $updateData);
+        }
+
+        return $this->success(null, 'Reseña actualizada.');
     }
 
     public function me(): ResponseInterface

@@ -55,9 +55,11 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
 
     // User profile (protegido)
     $routes->group('user', ['filter' => 'jwt'], static function ($routes) {
-        $routes->get('me',       'UserController::me');
-        $routes->put('me',       'UserController::update');
-        $routes->put('password', 'UserController::changePassword');
-        $routes->get('media',    'UserController::media');
+        $routes->get('me',           'UserController::me');
+        $routes->put('me',           'UserController::update');
+        $routes->put('password',     'UserController::changePassword');
+        $routes->get('media',        'UserController::media');
+        $routes->get('media/(:num)', 'UserController::mediaStatus/$1');
+        $routes->put('media/(:num)', 'UserController::updateMediaReview/$1');
     });
 });
