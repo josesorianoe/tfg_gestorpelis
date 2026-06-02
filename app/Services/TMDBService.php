@@ -99,6 +99,24 @@ class TMDBService
         return $response;
     }
 
+    public function getPerson(int $personId): array
+    {
+        $cacheKey = $this->cache->buildKey('person', (string) $personId);
+        $endpoint = "/person/{$personId}";
+
+        if ($cached = $this->cache->get($cacheKey)) {
+            return $cached;
+        }
+
+        $response = $this->get($endpoint, [
+            'language'           => 'es-ES',
+            'append_to_response' => 'combined_credits',
+        ]);
+
+        $this->cache->set($cacheKey, $endpoint, $response, $this->cacheTtl);
+        return $response;
+    }
+
     private function get(string $endpoint, array $params = []): array
     {
         $params['api_key'] = $this->apiKey;

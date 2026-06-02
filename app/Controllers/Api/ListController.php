@@ -74,6 +74,11 @@ class ListController extends BaseApiController
             return $this->error('Lista no encontrada.', 404);
         }
 
+        $list = $this->listModel->find($listId);
+        if ($list && ($list['is_default'] === true || $list['is_default'] === 't' || $list['is_default'] === 1)) {
+            return $this->error('No se puede editar la lista por defecto.', 403);
+        }
+
         $rules = [
             'name'        => 'permit_empty|min_length[1]|max_length[150]',
             'description' => 'permit_empty|max_length[1000]',
@@ -109,6 +114,11 @@ class ListController extends BaseApiController
         $listId = (int) $id;
         if (! $this->listModel->belongsToUser($listId, $this->currentUserId())) {
             return $this->error('Lista no encontrada.', 404);
+        }
+
+        $list = $this->listModel->find($listId);
+        if ($list && ($list['is_default'] === true || $list['is_default'] === 't' || $list['is_default'] === 1)) {
+            return $this->error('No se puede eliminar la lista por defecto.', 403);
         }
 
         $this->listModel->delete($listId);
@@ -151,6 +161,14 @@ class ListController extends BaseApiController
             } catch (\Throwable $e) {
                 log_message('error', 'TMDB fetch for list item: ' . $e->getMessage());
                 return $this->error('No se pudo obtener información del título.', 502);
+            }
+        }
+
+        // Remove from any other list the user already has this media in (one-list constraint)
+        $existingItems = $this->itemModel->getByUserAndMediaItem($this->currentUserId(), (int) $mediaItem['id']);
+        foreach ($existingItems as $existing) {
+            if ((int) $existing['list_id'] !== $listId) {
+                $this->itemModel->delete($existing['id']);
             }
         }
 

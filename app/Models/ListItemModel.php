@@ -77,7 +77,7 @@ class ListItemModel extends Model
     public function getByUserAndMediaItem(int $userId, int $mediaItemId): array
     {
         return $this->db->table('list_items li')
-            ->select('li.*')
+            ->select('li.*, ul.is_default, ul.name AS list_name')
             ->join('user_lists ul', 'ul.id = li.list_id')
             ->where('ul.user_id', $userId)
             ->where('li.media_item_id', $mediaItemId)

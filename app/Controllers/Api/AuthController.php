@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Api;
 
+use App\Models\UserListModel;
 use App\Models\UserModel;
 use App\Services\JWTService;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -40,6 +41,14 @@ class AuthController extends BaseApiController
         if (! $userId) {
             return $this->error('No se pudo crear el usuario.', 500);
         }
+
+        (new UserListModel())->insert([
+            'user_id'    => $userId,
+            'name'       => 'Pendientes',
+            'description' => '',
+            'is_public'  => false,
+            'is_default' => true,
+        ]);
 
         $user         = $this->userModel->find($userId);
         $accessToken  = $this->jwtService->generateAccessToken($userId, $user['email']);

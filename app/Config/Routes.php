@@ -32,6 +32,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
     $routes->get('search', 'SearchController::index', ['filter' => 'jwt']);
     $routes->get('media/(:num)', 'SearchController::show/$1', ['filter' => 'jwt']);
 
+    // Person (protegido)
+    $routes->get('person/(:num)', 'PersonController::show/$1', ['filter' => 'jwt']);
+
     // Catalog (protegido)
     $routes->group('catalog', ['filter' => 'jwt'], static function ($routes) {
         $routes->get('/',        'CatalogController::index');
@@ -59,7 +62,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
         $routes->put('me',           'UserController::update');
         $routes->put('password',     'UserController::changePassword');
         $routes->get('media',        'UserController::media');
-        $routes->get('media/(:num)', 'UserController::mediaStatus/$1');
-        $routes->put('media/(:num)', 'UserController::updateMediaReview/$1');
+        $routes->get('media/(:num)',    'UserController::mediaStatus/$1');
+        $routes->put('media/(:num)',    'UserController::updateMediaReview/$1');
+        $routes->delete('media/(:num)', 'UserController::removeFromAllLists/$1');
     });
 });

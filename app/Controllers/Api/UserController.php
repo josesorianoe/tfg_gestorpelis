@@ -33,16 +33,49 @@ class UserController extends BaseApiController
         $mediaItem = $this->mediaModel->findByTmdbId($tmdbId, $type);
 
         if (! $mediaItem) {
-            return $this->success(['in_list' => false, 'user_rating' => null, 'user_note' => null], 'Estado del título.');
+            return $this->success(['in_list' => false, 'in_non_default_list' => false, 'current_list_name' => null, 'user_rating' => null, 'user_note' => null], 'Estado del título.');
         }
 
         $items = $this->listItemModel->getByUserAndMediaItem($userId, (int) $mediaItem['id']);
 
+        $inNonDefault    = false;
+        $currentListName = null;
+        $currentListId   = null;
+        foreach ($items as $item) {
+            $isDefault = $item['is_default'];
+            if (! ($isDefault === true || $isDefault === 't' || $isDefault === 1)) {
+                $inNonDefault    = true;
+                $currentListName = $item['list_name'] ?? null;
+                $currentListId   = (int) $item['list_id'];
+            }
+        }
+
         return $this->success([
-            'in_list'     => ! empty($items),
-            'user_rating' => $items[0]['user_rating'] ?? null,
-            'user_note'   => $items[0]['user_note']   ?? null,
+            'in_list'             => ! empty($items),
+            'in_non_default_list' => $inNonDefault,
+            'current_list_name'   => $currentListName,
+            'current_list_id'     => $currentListId,
+            'user_rating'         => $items[0]['user_rating'] ?? null,
+            'user_note'           => $items[0]['user_note']   ?? null,
         ], 'Estado del título.');
+    }
+
+    public function removeFromAllLists(int $tmdbId): ResponseInterface
+    {
+        $type      = $this->request->getGet('type') ?? 'movie';
+        $userId    = $this->currentUserId();
+        $mediaItem = $this->mediaModel->findByTmdbId($tmdbId, $type);
+
+        if (! $mediaItem) {
+            return $this->success(null, 'Sin cambios.');
+        }
+
+        $items = $this->listItemModel->getByUserAndMediaItem($userId, (int) $mediaItem['id']);
+        foreach ($items as $item) {
+            $this->listItemModel->delete($item['id']);
+        }
+
+        return $this->success(null, 'Eliminado de las listas.');
     }
 
     public function updateMediaReview(int $tmdbId): ResponseInterface
