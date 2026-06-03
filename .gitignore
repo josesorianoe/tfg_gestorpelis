@@ -31,5 +31,8 @@ desktop.ini
 *.swp
 *.swo
 
+# Claude Code
+.claude/
+
 # PHP
 *.log
