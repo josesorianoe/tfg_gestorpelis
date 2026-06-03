@@ -1,9 +1,8 @@
-﻿#!/bin/sh
+#!/bin/sh
 set -e
 
 APP_DIR=/var/www/html
 
-# Generate CI4 .env from Railway environment variables
 {
     printf 'CI_ENVIRONMENT = production\n'
     printf 'app.baseURL = %s\n' "${APP_BASE_URL}"
@@ -27,16 +26,9 @@ APP_DIR=/var/www/html
     printf 'TMDB_CACHE_TTL = %s\n' "${TMDB_CACHE_TTL:-86400}"
 } > "${APP_DIR}/.env"
 
-# Ensure writable dirs have correct permissions
 chmod -R 777 "${APP_DIR}/writable"
-
-# Run database migrations
 cd "${APP_DIR}"
 php spark migrate --force
-
-# Generate nginx config substituting $PORT assigned by Railway
 mkdir -p /run/nginx
 envsubst '${PORT}' < /etc/nginx/templates/prod.conf.template > /etc/nginx/http.d/default.conf
-
-# Start supervisord (manages php-fpm + nginx)
 exec /usr/bin/supervisord -c /etc/supervisord.conf
