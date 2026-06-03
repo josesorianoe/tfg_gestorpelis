@@ -25,15 +25,16 @@ class JWTService
         $this->refreshTtl = (int) (env('JWT_REFRESH_TTL', 2592000));
     }
 
-    public function generateAccessToken(int $userId, string $email): string
+    public function generateAccessToken(int $userId, string $email, string $role = 'user'): string
     {
         $now     = time();
         $payload = [
-            'iss' => env('app.baseURL', 'http://localhost:8080'),
-            'iat' => $now,
-            'exp' => $now + $this->accessTtl,
-            'sub' => $userId,
+            'iss'   => env('app.baseURL', 'http://localhost:8080'),
+            'iat'   => $now,
+            'exp'   => $now + $this->accessTtl,
+            'sub'   => $userId,
             'email' => $email,
+            'role'  => $role,
         ];
 
         return JWT::encode($payload, $this->secret, 'HS256');

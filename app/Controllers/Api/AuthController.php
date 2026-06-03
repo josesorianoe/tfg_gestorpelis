@@ -70,7 +70,7 @@ class AuthController extends BaseApiController
         }
 
         $user         = $this->userModel->find($userId);
-        $accessToken  = $this->jwtService->generateAccessToken($userId, $user['email']);
+        $accessToken  = $this->jwtService->generateAccessToken($userId, $user['email'], $user['role'] ?? 'user');
         $refreshToken = $this->jwtService->generateRefreshToken($userId);
 
         return $this->success([
@@ -101,7 +101,7 @@ class AuthController extends BaseApiController
             return $this->error('Credenciales incorrectas.', 401);
         }
 
-        $accessToken  = $this->jwtService->generateAccessToken($user['id'], $user['email']);
+        $accessToken  = $this->jwtService->generateAccessToken($user['id'], $user['email'], $user['role'] ?? 'user');
         $refreshToken = $this->jwtService->generateRefreshToken($user['id']);
 
         return $this->success([
@@ -134,7 +134,7 @@ class AuthController extends BaseApiController
 
         // Rotate refresh token
         $this->jwtService->revokeRefreshToken($token);
-        $newAccessToken  = $this->jwtService->generateAccessToken($user['id'], $user['email']);
+        $newAccessToken  = $this->jwtService->generateAccessToken($user['id'], $user['email'], $user['role'] ?? 'user');
         $newRefreshToken = $this->jwtService->generateRefreshToken($user['id']);
 
         return $this->success([

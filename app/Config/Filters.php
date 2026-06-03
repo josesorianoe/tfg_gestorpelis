@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Filters\AdminFilter;
 use App\Filters\CorsFilter;
 use App\Filters\JWTAuthFilter;
 use CodeIgniter\Config\BaseConfig;
@@ -21,6 +22,7 @@ class Filters extends BaseConfig
         'secureheaders' => SecureHeaders::class,
         'jwt'           => JWTAuthFilter::class,
         'cors'          => CorsFilter::class,
+        'admin'         => AdminFilter::class,
     ];
 
     public array $globals = [
