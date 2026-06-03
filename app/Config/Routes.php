@@ -65,7 +65,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
     });
 
     // Admin (protegido + rol admin)
-    $routes->group('admin', ['filter' => 'jwt,admin'], static function ($routes) {
+    $routes->group('admin', ['filter' => ['jwt', 'admin']], static function ($routes) {
         $routes->get('users',          'AdminController::listUsers');
         $routes->delete('users/(:num)', 'AdminController::deleteUser/$1');
     });
