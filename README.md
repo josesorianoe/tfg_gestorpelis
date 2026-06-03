@@ -1,7 +1,18 @@
-# Gestor Películas y Series — API REST
+# Gestor Películas y Series
 
-Backend de la aplicación de gestión de películas y series, desarrollado como TFG.  
-Stack: **CodeIgniter 4 · PHP 8.2 · PostgreSQL 16 · Docker · JWT · TMDB API**
+Aplicación de gestión de películas y series desarrollada como TFG.  
+**Backend:** CodeIgniter 4 · PHP 8.2 · PostgreSQL 16 · Docker · JWT · TMDB API  
+**Frontend:** Flutter (Android)
+
+---
+
+## Descarga la app (Android)
+
+[**Descargar APK — GestorPelis v1.0**](https://github.com/josesorianoe/tfg_gestorpelis/releases/download/v1.0.0/app-release.apk)
+
+> Requiere activar **"Instalar aplicaciones de fuentes desconocidas"** en Ajustes → Seguridad del móvil.
+
+**API en producción:** `https://tfggestorpelis-production.up.railway.app`
 
 ---
 
