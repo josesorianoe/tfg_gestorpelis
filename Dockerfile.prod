@@ -1,0 +1,56 @@
+﻿FROM php:8.2-fpm-alpine
+
+RUN apk add --no-cache \
+    bash \
+    curl \
+    freetype-dev \
+    gettext \
+    icu-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+    libzip-dev \
+    nginx \
+    oniguruma-dev \
+    postgresql-dev \
+    supervisor \
+    unzip \
+    zip
+
+RUN docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg \
+        --with-webp \
+    && docker-php-ext-install -j$(nproc) \
+        gd \
+        intl \
+        mbstring \
+        opcache \
+        pdo \
+        pdo_pgsql \
+        pgsql \
+        zip
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+COPY . .
+
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+RUN mkdir -p writable/cache writable/logs writable/session writable/uploads \
+    && chmod -R 777 writable
+
+RUN cp docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini \
+    && mkdir -p /etc/nginx/templates \
+    && cp docker/nginx/prod.conf.template /etc/nginx/templates/prod.conf.template \
+    && cp docker/supervisord.conf /etc/supervisord.conf \
+    && cp docker/start.sh /start.sh \
+    && chmod +x /start.sh \
+    && rm -f /etc/nginx/http.d/default.conf \
+    && mkdir -p /run/nginx
+
+EXPOSE 8080
+
+CMD ["/start.sh"]
