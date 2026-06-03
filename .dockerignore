@@ -11,3 +11,4 @@ writable/uploads/*
 .env
 docker-compose.override.yml
 README.md
+mobile/
