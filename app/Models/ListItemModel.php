@@ -86,6 +86,15 @@ class ListItemModel extends Model
             ->getResultArray();
     }
 
+    public function deleteByUserAndMediaItem(int $userId, int $mediaItemId): void
+    {
+        $this->db->table('list_items li')
+            ->join('user_lists ul', 'ul.id = li.list_id')
+            ->where('ul.user_id', $userId)
+            ->where('li.media_item_id', $mediaItemId)
+            ->delete();
+    }
+
     public function existsInList(int $listId, int $mediaItemId): bool
     {
         return $this->where('list_id', $listId)

@@ -37,26 +37,15 @@ class UserController extends BaseApiController
         }
 
         $items = $this->listItemModel->getByUserAndMediaItem($userId, (int) $mediaItem['id']);
-
-        $inNonDefault    = false;
-        $currentListName = null;
-        $currentListId   = null;
-        foreach ($items as $item) {
-            $isDefault = $this->isTrue($item['is_default']);
-            $currentListName = $item['list_name'] ?? null;
-            $currentListId   = (int) $item['list_id'];
-            if (! $isDefault) {
-                $inNonDefault = true;
-            }
-        }
+        $item  = $items[0] ?? null;
 
         return $this->success([
-            'in_list'             => ! empty($items),
-            'in_non_default_list' => $inNonDefault,
-            'current_list_name'   => $currentListName,
-            'current_list_id'     => $currentListId,
-            'user_rating'         => $items[0]['user_rating'] ?? null,
-            'user_note'           => $items[0]['user_note']   ?? null,
+            'in_list'             => $item !== null,
+            'in_non_default_list' => $item !== null && ! $this->isTrue($item['is_default']),
+            'current_list_name'   => $item['list_name'] ?? null,
+            'current_list_id'     => $item ? (int) $item['list_id'] : null,
+            'user_rating'         => $item['user_rating'] ?? null,
+            'user_note'           => $item['user_note']   ?? null,
         ], 'Estado del título.');
     }
 
@@ -70,10 +59,7 @@ class UserController extends BaseApiController
             return $this->success(null, 'Sin cambios.');
         }
 
-        $items = $this->listItemModel->getByUserAndMediaItem($userId, (int) $mediaItem['id']);
-        foreach ($items as $item) {
-            $this->listItemModel->delete($item['id']);
-        }
+        $this->listItemModel->deleteByUserAndMediaItem($userId, (int) $mediaItem['id']);
 
         return $this->success(null, 'Eliminado de las listas.');
     }

@@ -55,10 +55,15 @@ class UserListModel extends Model
         return $list;
     }
 
-    public function belongsToUser(int $listId, int $userId): bool
+    public function findByUser(int $listId, int $userId): ?array
     {
         return $this->where('id', $listId)
                     ->where('user_id', $userId)
-                    ->countAllResults() > 0;
+                    ->first();
+    }
+
+    public function belongsToUser(int $listId, int $userId): bool
+    {
+        return $this->findByUser($listId, $userId) !== null;
     }
 }

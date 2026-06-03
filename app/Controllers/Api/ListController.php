@@ -70,12 +70,12 @@ class ListController extends BaseApiController
     public function update($id = null): ResponseInterface
     {
         $listId = (int) $id;
-        if (! $this->listModel->belongsToUser($listId, $this->currentUserId())) {
+        $list   = $this->listModel->findByUser($listId, $this->currentUserId());
+        if (! $list) {
             return $this->error('Lista no encontrada.', 404);
         }
 
-        $list = $this->listModel->find($listId);
-        if ($list && ($this->isTrue($list['is_default']))) {
+        if ($this->isTrue($list['is_default'])) {
             return $this->error('No se puede editar la lista por defecto.', 403);
         }
 
@@ -112,12 +112,12 @@ class ListController extends BaseApiController
     public function delete($id = null): ResponseInterface
     {
         $listId = (int) $id;
-        if (! $this->listModel->belongsToUser($listId, $this->currentUserId())) {
+        $list   = $this->listModel->findByUser($listId, $this->currentUserId());
+        if (! $list) {
             return $this->error('Lista no encontrada.', 404);
         }
 
-        $list = $this->listModel->find($listId);
-        if ($list && ($this->isTrue($list['is_default']))) {
+        if ($this->isTrue($list['is_default'])) {
             return $this->error('No se puede eliminar la lista por defecto.', 403);
         }
 
@@ -131,7 +131,8 @@ class ListController extends BaseApiController
 
     public function addItem(int $listId): ResponseInterface
     {
-        if (! $this->listModel->belongsToUser($listId, $this->currentUserId())) {
+        $list = $this->listModel->findByUser($listId, $this->currentUserId());
+        if (! $list) {
             return $this->error('Lista no encontrada.', 404);
         }
 
@@ -150,8 +151,7 @@ class ListController extends BaseApiController
         $mediaType = $input['media_type'];
 
         // Enforce list media_type restriction
-        $list = $this->listModel->find($listId);
-        if ($list && ! empty($list['media_type']) && $list['media_type'] !== $mediaType) {
+        if (! empty($list['media_type']) && $list['media_type'] !== $mediaType) {
             return $this->error(
                 'Esta lista solo acepta ' . ($list['media_type'] === 'tv' ? 'series' : 'películas') . '.',
                 422
@@ -173,16 +173,13 @@ class ListController extends BaseApiController
             }
         }
 
-        // Remove from any other list the user already has this media in (one-list constraint)
+        // Remove from any other list (one-list constraint); detect if already in this list
         $existingItems = $this->itemModel->getByUserAndMediaItem($this->currentUserId(), (int) $mediaItem['id']);
         foreach ($existingItems as $existing) {
-            if ((int) $existing['list_id'] !== $listId) {
-                $this->itemModel->delete($existing['id']);
+            if ((int) $existing['list_id'] === $listId) {
+                return $this->error('Este título ya está en la lista.', 409);
             }
-        }
-
-        if ($this->itemModel->existsInList($listId, $mediaItem['id'])) {
-            return $this->error('Este título ya está en la lista.', 409);
+            $this->itemModel->delete($existing['id']);
         }
 
         $itemId = $this->itemModel->insert([

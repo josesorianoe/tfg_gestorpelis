@@ -45,19 +45,44 @@ class MediaItemModel extends Model
 
     public function upsert(array $data): int|string
     {
-        $data['genres']   = is_array($data['genres'])   ? json_encode($data['genres'])   : ($data['genres'] ?? '[]');
-        $data['raw_data'] = is_array($data['raw_data']) ? json_encode($data['raw_data']) : ($data['raw_data'] ?? '{}');
+        $genres  = is_array($data['genres'])   ? json_encode($data['genres'])   : ($data['genres'] ?? '[]');
+        $rawData = is_array($data['raw_data']) ? json_encode($data['raw_data']) : ($data['raw_data'] ?? '{}');
 
-        $existing = $this->where('tmdb_id', $data['tmdb_id'])
-                         ->where('media_type', $data['media_type'])
-                         ->first();
+        $this->db->query(
+            'INSERT INTO media_items
+                (tmdb_id, media_type, title, overview, poster_path, backdrop_path, release_date, vote_average, genres, raw_data, cached_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?::jsonb, ?::jsonb, ?)
+             ON CONFLICT (tmdb_id, media_type)
+             DO UPDATE SET title         = EXCLUDED.title,
+                           overview      = EXCLUDED.overview,
+                           poster_path   = EXCLUDED.poster_path,
+                           backdrop_path = EXCLUDED.backdrop_path,
+                           release_date  = EXCLUDED.release_date,
+                           vote_average  = EXCLUDED.vote_average,
+                           genres        = EXCLUDED.genres,
+                           raw_data      = EXCLUDED.raw_data,
+                           cached_at     = EXCLUDED.cached_at',
+            [
+                $data['tmdb_id'],
+                $data['media_type'],
+                $data['title'],
+                $data['overview'] ?? '',
+                $data['poster_path'] ?? null,
+                $data['backdrop_path'] ?? null,
+                $data['release_date'] ?? null,
+                $data['vote_average'] ?? 0,
+                $genres,
+                $rawData,
+                $data['cached_at'] ?? date('Y-m-d H:i:s'),
+            ]
+        );
 
-        if ($existing) {
-            $this->update($existing['id'], $data);
-            return $existing['id'];
-        }
+        $row = $this->where('tmdb_id', $data['tmdb_id'])
+                    ->where('media_type', $data['media_type'])
+                    ->select('id')
+                    ->first();
 
-        return $this->insert($data, true);
+        return $row['id'];
     }
 
     public function paginated(int $page = 1, int $perPage = 20): array

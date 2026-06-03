@@ -41,21 +41,17 @@ class TmdbCacheModel extends Model
     public function store(string $cacheKey, string $endpoint, array $response, int $ttlSeconds): void
     {
         $expiresAt = date('Y-m-d H:i:s', time() + $ttlSeconds);
-        $payload   = [
-            'cache_key'  => $cacheKey,
-            'endpoint'   => $endpoint,
-            'response'   => json_encode($response),
-            'expires_at' => $expiresAt,
-            'created_at' => date('Y-m-d H:i:s'),
-        ];
+        $now       = date('Y-m-d H:i:s');
 
-        $existing = $this->where('cache_key', $cacheKey)->first();
-
-        if ($existing) {
-            $this->update($existing['id'], $payload);
-        } else {
-            $this->insert($payload);
-        }
+        $this->db->query(
+            'INSERT INTO tmdb_cache (cache_key, endpoint, response, expires_at, created_at)
+             VALUES (?, ?, ?, ?, ?)
+             ON CONFLICT (cache_key)
+             DO UPDATE SET endpoint = EXCLUDED.endpoint,
+                           response = EXCLUDED.response,
+                           expires_at = EXCLUDED.expires_at',
+            [$cacheKey, $endpoint, json_encode($response), $expiresAt, $now]
+        );
     }
 
     public function purgeExpired(): int
