@@ -50,7 +50,7 @@ class TmdbCacheModel extends Model
              DO UPDATE SET endpoint = EXCLUDED.endpoint,
                            response = EXCLUDED.response,
                            expires_at = EXCLUDED.expires_at',
-            [$cacheKey, $endpoint, json_encode($response), $expiresAt, $now]
+            [$cacheKey, $endpoint, json_encode($response, JSON_UNESCAPED_UNICODE), $expiresAt, $now]
         );
     }
 

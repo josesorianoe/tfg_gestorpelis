@@ -14,7 +14,7 @@ APP_DIR=/var/www/html
     printf 'database.default.database = %s\n' "${DB_NAME}"
     printf 'database.default.port = %s\n' "${DB_PORT:-5432}"
     printf 'database.default.DBDriver = Postgre\n'
-    printf 'database.default.charset = utf8\n'
+    printf 'database.default.charset = UTF8\n'
     printf '\n'
     printf 'JWT_SECRET = %s\n' "${JWT_SECRET}"
     printf 'JWT_ACCESS_TTL = %s\n' "${JWT_ACCESS_TTL:-3600}"

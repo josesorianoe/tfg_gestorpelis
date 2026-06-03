@@ -45,8 +45,8 @@ class MediaItemModel extends Model
 
     public function upsert(array $data): int|string
     {
-        $genres  = is_array($data['genres'])   ? json_encode($data['genres'])   : ($data['genres'] ?? '[]');
-        $rawData = is_array($data['raw_data']) ? json_encode($data['raw_data']) : ($data['raw_data'] ?? '{}');
+        $genres  = is_array($data['genres'])   ? json_encode($data['genres'],   JSON_UNESCAPED_UNICODE) : ($data['genres'] ?? '[]');
+        $rawData = is_array($data['raw_data']) ? json_encode($data['raw_data'], JSON_UNESCAPED_UNICODE) : ($data['raw_data'] ?? '{}');
 
         $this->db->query(
             'INSERT INTO media_items
