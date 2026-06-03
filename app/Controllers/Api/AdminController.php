@@ -17,7 +17,8 @@ class AdminController extends BaseApiController
     public function listUsers(): ResponseInterface
     {
         $users = $this->userModel
-            ->select('id, name, email, role, created_at')
+            ->select('id, name, email, role, deletion_requested_at, created_at')
+            ->orderBy('deletion_requested_at IS NOT NULL', 'DESC', false)
             ->orderBy('role = \'admin\'', 'DESC', false)
             ->orderBy('created_at', 'ASC')
             ->findAll();

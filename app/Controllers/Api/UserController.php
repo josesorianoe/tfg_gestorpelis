@@ -129,6 +129,26 @@ class UserController extends BaseApiController
         return $this->success($this->userModel->safeFields($user), 'Perfil del usuario.');
     }
 
+    public function requestDeletion(): ResponseInterface
+    {
+        $userId = $this->currentUserId();
+        $user   = $this->userModel->find($userId);
+
+        if (! $user) {
+            return $this->error('Usuario no encontrado.', 404);
+        }
+
+        if (! empty($user['deletion_requested_at'])) {
+            return $this->error('Ya existe una solicitud de eliminación pendiente.', 409);
+        }
+
+        $this->userModel->update($userId, [
+            'deletion_requested_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        return $this->success(null, 'Solicitud de eliminación enviada.');
+    }
+
     public function update($id = null): ResponseInterface
     {
         $userId = $this->currentUserId();

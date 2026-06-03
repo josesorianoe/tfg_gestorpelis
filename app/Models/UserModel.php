@@ -19,6 +19,7 @@ class UserModel extends Model
         'name',
         'avatar_url',
         'role',
+        'deletion_requested_at',
     ];
 
     protected $useTimestamps = true;
