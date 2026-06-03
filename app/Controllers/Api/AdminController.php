@@ -18,6 +18,7 @@ class AdminController extends BaseApiController
     {
         $users = $this->userModel
             ->select('id, name, email, role, created_at')
+            ->orderBy('role = \'admin\'', 'DESC', false)
             ->orderBy('created_at', 'ASC')
             ->findAll();
 
