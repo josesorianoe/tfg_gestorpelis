@@ -31,49 +31,39 @@ Al abrir la app por primera vez, pulsa **"Crear cuenta"**, introduce tu nombre, 
 
 Al registrarte se crean automáticamente dos listas por defecto: **"Pendientes por ver"** para guardar contenido que quieres ver próximamente, y **"Series que estoy viendo"** para las series en curso.
 
-### 2. Buscar películas y series
+<img src="screenshots/1.jpeg" width="270"> <img src="screenshots/2.jpeg" width="270">
+
+### 2. Pantalla principal
+
+Tras iniciar sesión accedes a la pantalla de inicio, donde encontrarás un carrusel con el contenido más popular en ese momento y, más abajo, los ítems de tus listas.
+
+<img src="screenshots/3.jpeg" width="270">
+
+### 3. Buscar películas y series
 
 Usa la pestaña **Buscar** (icono de lupa) para buscar cualquier película o serie por título. Puedes filtrar los resultados por **película**, **serie** o **persona**. Pulsa sobre un resultado para ver su ficha completa.
 
-### 3. Ver el detalle de un título
+<img src="screenshots/4.jpeg" width="270">
 
-En la pantalla de detalle encontrarás:
-- Sinopsis, géneros, fecha de estreno y valoración media.
-- En el caso de series, lista de temporadas y episodios con toggle para marcarlos como vistos.
-- Botón **"Añadir a lista"** para guardarlo en tu colección.
+### 4. Ver el detalle de un título
 
-### 4. Gestionar tus listas
+En la pantalla de detalle encontrarás la sinopsis, géneros, fecha de estreno, valoración media, reparto y el botón **"Añadir a lista"** para guardarlo en tu colección. En el caso de las series, también aparece la lista de temporadas y episodios con un toggle para marcar cada episodio como visto.
 
-Desde la pestaña **Mis listas** puedes:
-- Ver tus listas existentes. Las dos listas por defecto (*Pendientes por ver* y *Series que estoy viendo*) aparecen siempre al inicio con la etiqueta "Por defecto".
-- Crear listas nuevas pulsando el botón **+**.
-- Pulsar sobre una lista para ver su contenido, editar ítems o eliminarlos deslizando.
+<img src="screenshots/5.jpeg" width="270"> <img src="screenshots/6.jpeg" width="270">
 
-Al añadir un título a una lista puedes indicar si ya lo has visto, añadir una puntuación y escribir una reseña personal.
+### 5. Gestionar tus listas
 
-### 5. Seguimiento de episodios
+Desde la pestaña **Mis listas** puedes ver todas tus listas. Las dos listas por defecto (*Pendientes por ver* y *Series que estoy viendo*) aparecen siempre al inicio con la etiqueta "Por defecto". Puedes crear listas nuevas pulsando el botón **+**, o pulsar sobre una lista para ver su contenido, editar ítems o eliminarlos deslizando.
 
-En el detalle de una serie, selecciona una temporada para ver sus episodios. Marca cada episodio como visto con el toggle de la derecha. El progreso se guarda automáticamente.
+Al añadir un título puedes indicar si ya lo has visto, añadir una puntuación y escribir una reseña personal.
+
+<img src="screenshots/7.jpeg" width="270"> <img src="screenshots/8.jpeg" width="270">
 
 ### 6. Tu perfil
 
-En la pestaña **Perfil** puedes:
-- Consultar tu historial de visionado agrupado por mes.
-- Editar tu nombre o cambiar tu contraseña.
-- Solicitar la eliminación de tu cuenta.
+En la pestaña **Perfil** puedes editar tu nombre, cambiar tu contraseña, consultar tu historial de visionado agrupado por mes y solicitar la eliminación de tu cuenta.
 
----
-
-## Capturas de pantalla
-
-| | | |
-|:---:|:---:|:---:|
-| ![Login](screenshots/1.jpeg) | ![Registro](screenshots/2.jpeg) | ![Inicio](screenshots/3.jpeg) |
-| Inicio de sesión | Registro | Pantalla principal |
-| ![Búsqueda](screenshots/4.jpeg) | ![Detalle película](screenshots/5.jpeg) | ![Detalle serie](screenshots/6.jpeg) |
-| Búsqueda | Detalle de película | Detalle de serie y episodios |
-| ![Listas](screenshots/7.jpeg) | ![Detalle lista](screenshots/8.jpeg) | ![Perfil](screenshots/9.1.jpeg) |
-| Mis listas | Detalle de lista | Perfil |
+<img src="screenshots/9.1.jpeg" width="270"> <img src="screenshots/9.2.jpeg" width="270">
 
 ---
 
